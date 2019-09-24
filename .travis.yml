@@ -1,0 +1,4 @@
+# Config file for automatic testing at travis-ci.org
+compiler:
+  - clang
+  - gcc

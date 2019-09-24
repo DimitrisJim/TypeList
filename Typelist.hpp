@@ -31,6 +31,9 @@ namespace Typelist {
      *
      * A specialization handles the case where a single type is supplied (and it is also the base
      * case for our recursion returning a Typelist with a Sentinel as it's Tail)
+     *
+     * @tparam T: we consume Types pack by using this extra type.
+     * @tparam Types: template argument pack to grab all types.
      */
      template<typename T, typename ... Types>
      struct Create{
@@ -42,4 +45,13 @@ namespace Typelist {
          using result = Typelist<T, Sentinel>;
      };
 
+     /**
+      * Length<Typelist>:
+      * ----------------------
+      *
+      */
+
+      template<class TypeList> struct Length;
+
+// End of namespace Typelist
 }
