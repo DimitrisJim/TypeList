@@ -3,3 +3,9 @@ language: cpp
 compiler:
   - clang
   - gcc
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - make
