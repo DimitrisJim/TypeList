@@ -35,23 +35,45 @@ namespace Typelist {
      * @tparam T: we consume Types pack by using this extra type.
      * @tparam Types: template argument pack to grab all types.
      */
-     template<typename T, typename ... Types>
-     struct Create{
-         using result = Typelist<T, typename Create<Types...>::result>;
-     };
-     // Base case:
-     template<typename T>
-     struct Create<T>{
-         using result = Typelist<T, Sentinel>;
-     };
+    template<typename T, typename ... Types>
+    struct Create{
+       using result = Typelist<T, typename Create<Types...>::result>;
+    };
+    // Partial specialisation for leading Sentinel
+    template<typename ... Types>
+    struct Create<Sentinel, Types ...>{
+      using result = typename Create<Types...>::result;
+    };
+    // Total specialisation for sentinels:
+    template<>
+    struct Create<Sentinel>{
+      using result = Sentinel;
+    };
+    // Base case:
+    template<typename T>
+    struct Create<T>{
+       using result = Typelist<T, Sentinel>;
+    };
 
-     /**
-      * Length<Typelist>:
-      * ----------------------
-      *
-      */
+    /**
+     * Length<Typelist>:
+     * ----------------------
+     * Recursively create our types by passing Tail to Length.
+     *
+     * @tparam TypeList: The Typelist for which we count.
+     */
+    template<class TypeList> struct Length;
+    template<> struct Length<Sentinel>{
+      enum { value = 0 };
+    };
+    template<> struct Length<Typelist<Sentinel, Sentinel>>{
+      enum { value = 0 };
+    };
+    template<class Head, class Tail>
+    struct Length<Typelist<Head, Tail>>{
+      enum { value = 1 + Length<Tail>::value };
+    };
 
-      template<class TypeList> struct Length;
 
 // End of namespace Typelist
 }
