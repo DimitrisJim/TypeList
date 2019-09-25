@@ -74,6 +74,34 @@ namespace Typelist {
       enum { value = 1 + Length<Tail>::value };
     };
 
+    /**
+     * TypeAt<Typelist, index>:
+     * ------------------------
+     * Get type in typelist with index i. Negative indices not allowed
+     * by using unsigned for index.
+     *
+     * TODO: Handle out of bounds access?
+     *
+     * @tparam Typelist Typelist we operate on
+     * @tparam index    index for which we query type.
+     */
+    template<class Typelist, unsigned int index> struct TypeAt;
+    // Specialise for index == 0
+    template<class Head, class Tail>
+    struct TypeAt<Typelist<Head, Tail>, 0>{
+        using result = Head;
+    };
+    // Recurse:
+    template<class Head, class Tail, unsigned int index>
+    struct TypeAt<Typelist<Head, Tail>, index>{
+        using result = typename TypeAt<Tail, index-1>::result;
+    };
+    // For out of bounds (I.e we reach end Sentinel) don't raise error.
+    // Simply return the Sentinel.
+    template<unsigned int i>
+    struct TypeAt<Sentinel, i>{
+      using result = Sentinel;
+    };
 
-// End of namespace Typelist
+    // End of namespace Typelist
 }
