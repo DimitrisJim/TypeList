@@ -62,3 +62,23 @@ void test_typeof(){
     using res2 = TypeAt<t2, 0>::result;
     static_assert(is_same<res2, Sentinel>::value, "Type Mismatch");
 }
+
+/**
+ * Basic test for pop from empty Typelist in non-applicable; we can't create an empty
+ * Typelist.
+ */
+void test_pop(){
+    using Typelist::Create;
+    using Typelist::Pop;
+    using std::is_same;
+    using Typelist::Length;
+
+    using t1 = Create<int, double, char>::result;
+    using res1 = Pop<t1>;
+    static_assert(is_same<res1::type, char>::value, "Error type mismatch");
+    static_assert(Length<res1::result>::value == 2, "Error length mismatch");
+
+    using res2 = Pop<Typelist::Typelist<int, Typelist::Sentinel>>;
+    static_assert(is_same<res2::type, int>::value, "Error type mismatch");
+    static_assert(Length<res2::result>::value == 0, "Error length mismatch");
+}

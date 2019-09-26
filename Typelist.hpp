@@ -84,5 +84,32 @@ namespace Typelist {
         using result = typename TypeAt<Tail, index-1>::result;
     };
 
+    /**
+     * Pop<Typelist>:
+     * --------------
+     * Pops and returns the last value of the Typelist as is done in
+     * similar list operations. Returns a new Typelist.
+     *
+     * @tparam Typelist The typelist to pop from.
+     *
+     * Returns new Typelist as result
+     * Returns type popped as type
+     */
+     template<class Typelist> struct Pop;
+     template<class Head, class Tail>
+     struct Pop<Typelist<Head, Tail>>{
+      private:
+        using recurse = Pop<Tail>;
+      public:
+        using result = Typelist<Head, typename recurse::result>;
+        using type = typename recurse::type;
+     };
+     template<class T>
+     struct Pop<Typelist<T, Sentinel>>{
+        using result = Sentinel;
+        using type = T;
+     };
+
+
     // End of namespace Typelist
 }
