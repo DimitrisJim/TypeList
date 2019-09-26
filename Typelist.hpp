@@ -39,16 +39,6 @@ namespace Typelist {
     struct Create{
        using result = Typelist<T, typename Create<Types...>::result>;
     };
-    // Partial specialisation for leading Sentinel
-    template<typename ... Types>
-    struct Create<Sentinel, Types ...>{
-      using result = typename Create<Types...>::result;
-    };
-    // Total specialisation for sentinels:
-    template<>
-    struct Create<Sentinel>{
-      using result = Sentinel;
-    };
     // Base case:
     template<typename T>
     struct Create<T>{
@@ -64,9 +54,6 @@ namespace Typelist {
      */
     template<class TypeList> struct Length;
     template<> struct Length<Sentinel>{
-      enum { value = 0 };
-    };
-    template<> struct Length<Typelist<Sentinel, Sentinel>>{
       enum { value = 0 };
     };
     template<class Head, class Tail>
@@ -95,12 +82,6 @@ namespace Typelist {
     template<class Head, class Tail, unsigned int index>
     struct TypeAt<Typelist<Head, Tail>, index>{
         using result = typename TypeAt<Tail, index-1>::result;
-    };
-    // For out of bounds (I.e we reach end Sentinel) don't raise error.
-    // Simply return the Sentinel.
-    template<unsigned int i>
-    struct TypeAt<Sentinel, i>{
-      using result = Sentinel;
     };
 
     // End of namespace Typelist

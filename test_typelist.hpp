@@ -14,6 +14,7 @@ void test_creation(){
 
     // Abuse it a bit. Creates:
     using t3 = Create<Create<Create<Create<Create<Create<int>>>>>>::result;
+    // Allow sentinels.
     using t4 = Create<Sentinel, Sentinel, Sentinel, Sentinel, Sentinel, int>;
 
     // No arguments not allowed (should it?)
@@ -32,12 +33,14 @@ void test_length(){
     static_assert(Length<t2>::value == 1, "Length Mismatch");
 
     using t3 = Create<Typelist::Sentinel, Typelist::Sentinel>::result;
-    static_assert(Length<t3>::value == 0, "Length Mismatch");
+    static_assert(Length<t3>::value == 2, "Length Mismatch");
 
     using t4 = Create<
         Sentinel, Sentinel, double, Sentinel, Sentinel, Sentinel, int, Sentinel
         >::result;
-    static_assert(Length<t4>::value == 2, "Length Mismatch");
+    static_assert(Length<t4>::value == 8, "Length Mismatch");
+    using t5 = Create<Sentinel>::result;
+    static_assert(Length<t5>::value == 1, "Length Mismatch");
 }
 
 void test_typeof(){
@@ -52,8 +55,8 @@ void test_typeof(){
     static_assert(is_same<res1, char>::value, "Type Mismatch");
 
     // Go out of bounds, return sentinels:
-    using res2 = TypeAt<t1, 10>::result;
-    static_assert(is_same<res2, Sentinel>::value, "Type Mismatch");
+    //using res2 = TypeAt<t1, 3>::result;
+    // static_assert(is_same<res2, Sentinel>::value, "Type Mismatch");
 
     using t2 = Create<Sentinel, Sentinel>::result;
     using res2 = TypeAt<t2, 0>::result;
