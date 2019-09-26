@@ -82,3 +82,19 @@ void test_pop(){
     static_assert(is_same<res2::type, int>::value, "Error type mismatch");
     static_assert(Length<res2::result>::value == 0, "Error length mismatch");
 }
+
+void test_count(){
+    using Typelist::Count;
+    using Typelist::Create;
+    using Typelist::Sentinel;
+
+    // Basic checking.
+    using t1 = Create<int, int, int, double>::result;
+    static_assert(Count<t1, int>::value == 3, "Error Count mismatch");
+    static_assert(Count<t1, double>::value == 1, "Error Count mismatch");
+    static_assert(Count<t1, void>::value == 0, "Error Count mismatch");
+
+    // We don't count the end Sentinel, ever.
+    using t2 = Create<Sentinel, Sentinel, Sentinel>::result;
+    static_assert(Count<t2, Sentinel>::value == 3, "Error count mismatch");
+}

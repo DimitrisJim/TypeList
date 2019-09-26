@@ -94,6 +94,8 @@ namespace Typelist {
      *
      * Returns new Typelist as result
      * Returns type popped as type
+     *
+     * TODO: Update to accept index to pop?
      */
      template<class Typelist> struct Pop;
      template<class Head, class Tail>
@@ -110,6 +112,32 @@ namespace Typelist {
         using type = T;
      };
 
-
+     /**
+      * Count<Typelist, T>:
+      * -------------------
+      * Count occurrences of type T in typelist Typelist.
+      *
+      * @tparam Typelist
+      * @tparam T
+      */
+     template<class Typelist, class T> struct Count;
+     template<class Head, class Tail, class T>
+     struct Count<Typelist<Head, Tail>, T>{
+       enum {
+         value = Count<Tail, T>::value
+       };
+     };
+     template<class T, class Tail>
+     struct Count<Typelist<T, Tail>, T>{
+      enum {
+        value = 1 + Count<Tail, T>::value
+      };
+     };
+     template<class T>
+     struct Count<Sentinel, T>{
+       enum {
+         value = 0
+       };
+     };
     // End of namespace Typelist
 }
