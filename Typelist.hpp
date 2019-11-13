@@ -1,5 +1,7 @@
 namespace Typelist {
-    /** Used solely as marker for end of Typelist. */
+    /** Used solely as marker for end of Typelist.
+     * Can also use as element but that's asking for trouble.
+     **/
     class Sentinel{};
 
     /**
@@ -95,7 +97,6 @@ namespace Typelist {
      * Returns new Typelist as result
      * Returns type popped as type
      *
-     * TODO: Update to accept index to pop?
      */
      template<class Typelist> struct Pop;
      template<class Head, class Tail>
@@ -121,23 +122,61 @@ namespace Typelist {
       * @tparam T
       */
      template<class Typelist, class T> struct Count;
+     // Initial recursion.
      template<class Head, class Tail, class T>
      struct Count<Typelist<Head, Tail>, T>{
        enum {
          value = Count<Tail, T>::value
        };
      };
+     // Match (Typelist contains T as head), increment.
      template<class T, class Tail>
      struct Count<Typelist<T, Tail>, T>{
       enum {
         value = 1 + Count<Tail, T>::value
       };
      };
+     // We reach end (See Count<Tail>) and initialize value.
      template<class T>
      struct Count<Sentinel, T>{
        enum {
          value = 0
        };
      };
+
+    /**
+     * Append<Typelist, T>:
+     * -------------------
+     * Append type T at the end of typelist Typelist.
+     *
+     * @tparam Typelist
+     * @tparam T
+     */
+    template<class Typelist, class T> struct Append;
+    // Base Case we finally reach in recursive call
+    template<class T> struct Append<Sentinel, T>{
+      using result = typename Create<T>::result;
+    };
+    // Recurse; continously pass Tail with T to ourselves thereby reducing our size
+    // on each invocation (until we reach specialization).
+    template<class Head, class Tail, class T> struct Append<Typelist<Head, Tail>, T> {
+      using result = Typelist<Head, typename Append<Tail, T>::result>;
+    };
+
+    /**
+     * Contains<Typelist, T>:
+     * -------------------
+     * Does not make much sense, really, but add it either way. Basically uses Count to check that
+     * the value returned is > 0. Simple.
+     *
+     * @tparam Typelist
+     * @tparam T
+     */
+    template<class Typelist, class T> struct Contains{
+      enum {
+        value = Count<Typelist, T>::value > 0,
+      };
+    };
+
     // End of namespace Typelist
 }

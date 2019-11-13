@@ -98,3 +98,41 @@ void test_count(){
     using t2 = Create<Sentinel, Sentinel, Sentinel>::result;
     static_assert(Count<t2, Sentinel>::value == 3, "Error count mismatch");
 }
+
+void test_append(){
+    using Typelist::Count;
+    using Typelist::Create;
+    using Typelist::Append;
+    using Typelist::TypeAt;
+    using Typelist::Length;
+    using Typelist::Sentinel;
+    using std::is_same;
+
+    // Basic checking.
+    using t1 = Create<int, int, int, double>::result;
+    using t2 = Append<t1, float>::result;
+
+    static_assert(Length<t2>::value == 5, "Error Length mismatch");
+    static_assert(Count<t2, float>::value == 1, "Error Count mismatch");
+    using t = TypeAt<t2, 4>::result;
+    static_assert(is_same<t, float>::value, "Error TypeAt mismatch");
+
+    // Create a one element typelist
+    using t3 = Append<Sentinel, int>::result;
+    static_assert(Length<t3>::value == 1, "Error Length mismatch");
+    static_assert(is_same<TypeAt<t3, 0>::result, int>::value, "Error TypeAt mismatch");
+}
+
+void test_contains(){
+    using Typelist::Contains;
+    using Typelist::Create;
+    using Typelist::Sentinel;
+
+    // Basic checking.
+    using t1 = Create<int, int, int, double>::result;
+    static_assert(Contains<t1, int>::value, "Error Contains mismatch");
+    static_assert(Contains<t1, double>::value, "Error Contains mismatch");
+    static_assert(Contains<t1, void>::value == 0, "Error Contains mismatch");
+    // We don't count the end Sentinel, ever.
+    static_assert(Contains<t1, Sentinel>::value == 0, "Error Contains mismatch");
+}
