@@ -7,5 +7,5 @@ include_directories(.)
 
 add_executable(TypeList
         main.cpp
-        test_typelist.hpp
-        Typelist.hpp)
+        test/test_typelist.hpp
+        include/Typelist.hpp)
